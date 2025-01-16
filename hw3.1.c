@@ -129,21 +129,25 @@ void copyBoard(const char matrix[ROWS][COLS], char chosenBoard[ROWS][COLS], int 
 
 
 int main(void) {
-    int submarineCounter = 0; int numberOfS = 0, totalSubs = 0;
-    char currentStatusBoard[ROWS][COLS] = {0};
-    char chosenBoard[ROWS][COLS] = {0};
+    //&&&&&only for checking
+    setvbuf(stdout, NULL, _IONBF, 0);
+    int submarineCounter = 0; int numberOfS = 0, totalSubs = 0, counterOfMoves = 0;
+    char currentStatusBoard[ROWS][COLS] = {0}; char chosenBoard[ROWS][COLS] = {0};
 
     print_welcome_message();
 
     //Get board number
     int boardNum = 0;
     while (boardNum == 0) {
-        scanf("%d", &boardNum);
+        if (scanf("%d", &boardNum) != 1) {
+            return 1;
+        }
         if (boardNum < 1 || boardNum > 5) {
             printf("Error in board number, try again\n");
             boardNum = 0;
         }
         else {
+            // Waiting until Valid board number
             break;
         }
     }
@@ -168,84 +172,90 @@ int main(void) {
         default:
             break;
     }
-    //&& only for checking
-    printf("submarineCounter=%d\n", submarineCounter);
+
 
     //==== Main turn loop ====
+    while (numberOfS < submarineCounter) {
+        //Print current board status
+        printMatrix(currentStatusBoard);
 
-    //Print current board status
-    printMatrix(currentStatusBoard);
-
-    //Get position from user in each turn
-    int rowPos = 0, counterOfMoves = 0;
-    char letterPos = '\0';
-    print_enter_position();
-    scanf("%d %c", &rowPos, &letterPos);
-    int colPos = letterPos - 'A';
-    //Input validation
-    if (letterPos < 'A' || letterPos > 'H' || rowPos < 0 || rowPos > 7) {
-        print_error_row_or_col();
-    }
-
-
-
-    if (letterPos == 'A') {
-        print_error_position_already_bombed();
-    }
-
-
-    // Check if EMPTY
-    if (chosenBoard[rowPos][colPos] == EMPTY) {
-        currentStatusBoard[rowPos][colPos] = EMPTY;
-        counterOfMoves++;
-    }
-
-    //if SUBMARINE logic
-    else if (chosenBoard[rowPos][colPos] == SUBMARINE){
-        currentStatusBoard[rowPos][colPos] = SUBMARINE;
-        counterOfMoves++;
-        numberOfS ++;
-        for (int i = rowPos + 1; i < 8; i++) {
-            if (chosenBoard[i][colPos] == SUBMARINE) {
-                currentStatusBoard[i][colPos] = SUBMARINE;
-                numberOfS++;
-            }
-            else {
-                break;
-            }
+        //Get position from user in each turn
+        int rowPos = 0;
+        char letterPos = '\0';
+        print_enter_position();
+        if (scanf("%d %c", &rowPos, &letterPos) != 2) {
+            return 1;
         }
-        for (int i = rowPos - 1; i >= 0; i--) {
-            if (chosenBoard[i][colPos] == SUBMARINE) {
-                currentStatusBoard[i][colPos] = SUBMARINE;
-                numberOfS++;
-            }
-            else {
-                break;
-            }
+        int colPos = letterPos - 'A';
+
+        //Input validation for letters
+        if (letterPos < 'A' || letterPos > 'H' ) {
+            print_error_row_or_col();
+            continue;
         }
-        for (int j = colPos + 1; j < 8; j++) {
-            if (chosenBoard[rowPos][j] == SUBMARINE) {
-                currentStatusBoard[rowPos][j] = SUBMARINE;
-                numberOfS++;
-            }
-            else {
-                break;
-            }
+
+        //Input validation for numbers
+        if (rowPos < 0 || rowPos > 7 ) {
         }
-        for (int j = colPos - 1; j >= 0; j--) {
-            if (chosenBoard[rowPos][j] == SUBMARINE) {
-                currentStatusBoard[rowPos][j] = SUBMARINE;
-                numberOfS++;
-            }
-            else {
-                break;
-            }
+
+
+        if (currentStatusBoard[rowPos][colPos] == SUBMARINE || currentStatusBoard[rowPos][colPos] == EMPTY) {
+            print_error_position_already_bombed();
         }
-        totalSubs++;
+
+
+        // Check if EMPTY
+        if (chosenBoard[rowPos][colPos] == EMPTY) {
+            currentStatusBoard[rowPos][colPos] = EMPTY;
+            counterOfMoves++;
+        }
+
+        //if SUBMARINE logic
+        else if (chosenBoard[rowPos][colPos] == SUBMARINE){
+            currentStatusBoard[rowPos][colPos] = SUBMARINE;
+            counterOfMoves++;
+            numberOfS ++;
+            for (int i = rowPos + 1; i < 8; i++) {
+                if (chosenBoard[i][colPos] == SUBMARINE) {
+                    currentStatusBoard[i][colPos] = SUBMARINE;
+                    numberOfS++;
+                }
+                else {
+                    break;
+                }
+            }
+            for (int i = rowPos - 1; i >= 0; i--) {
+                if (chosenBoard[i][colPos] == SUBMARINE) {
+                    currentStatusBoard[i][colPos] = SUBMARINE;
+                    numberOfS++;
+                }
+                else {
+                    break;
+                }
+            }
+            for (int j = colPos + 1; j < 8; j++) {
+                if (chosenBoard[rowPos][j] == SUBMARINE) {
+                    currentStatusBoard[rowPos][j] = SUBMARINE;
+                    numberOfS++;
+                }
+                else {
+                    break;
+                }
+            }
+            for (int j = colPos - 1; j >= 0; j--) {
+                if (chosenBoard[rowPos][j] == SUBMARINE) {
+                    currentStatusBoard[rowPos][j] = SUBMARINE;
+                    numberOfS++;
+                }
+                else {
+                    break;
+                }
+            }
+            totalSubs++;
+        }
+
     }
-
-
-        //==== END Main turn loop ====
+            //==== END Main turn loop ====
 
 
         // Print complete board and final message
