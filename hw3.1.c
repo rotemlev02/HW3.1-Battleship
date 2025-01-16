@@ -16,7 +16,9 @@ void print_error_row_or_col();
 void print_error_position_already_bombed();
 void print_winning_message(int n_submarines, int n_moves);
 void printMatrix(char matrix[ROWS][COLS]);
-
+void copyBoard(const char matrix[ROWS][COLS], char chosenBoard[ROWS][COLS], int *submarineCounter);
+int getBoardNumber();
+void copyChosenBoard(int boardNum, char chosenBoard[ROWS][COLS], int* submarineCounter);
 
 // Optional Boards
 
@@ -131,6 +133,29 @@ int getBoardNumber(){
     return -1;
 }
 
+void copyChosenBoard(int boardNum, char chosenBoard[ROWS][COLS], int* submarineCounter) {
+    switch (boardNum) {
+        case 1:
+            copyBoard(MATRIX_1, chosenBoard, submarineCounter);
+        break;
+        case 2:
+            copyBoard(MATRIX_2, chosenBoard, submarineCounter);
+        break;
+        case 3:
+            copyBoard(MATRIX_3, chosenBoard, submarineCounter);
+        break;
+        case 4:
+            copyBoard(MATRIX_4, chosenBoard, submarineCounter);
+        break;
+        case 5:
+            copyBoard(MATRIX_5, chosenBoard, submarineCounter);
+        break;
+        default:
+            break;
+    }
+
+}
+
 // Add your functions here
 void copyBoard(const char matrix[ROWS][COLS], char chosenBoard[ROWS][COLS], int *submarineCounter) {
     for (int i = 0; i < 8; i++) {
@@ -159,25 +184,7 @@ int main(void) {
     }
 
     //Copy chosen board
-    switch (boardNum) {
-        case 1:
-            copyBoard(MATRIX_1, chosenBoard, &submarineCounter);
-        break;
-        case 2:
-            copyBoard(MATRIX_2, chosenBoard, &submarineCounter);
-        break;
-        case 3:
-            copyBoard(MATRIX_3, chosenBoard, &submarineCounter);
-        break;
-        case 4:
-            copyBoard(MATRIX_4, chosenBoard, &submarineCounter);
-        break;
-        case 5:
-            copyBoard(MATRIX_5, chosenBoard, &submarineCounter);
-        break;
-        default:
-            break;
-    }
+    copyChosenBoard(boardNum, chosenBoard, &submarineCounter);
 
 
     //==== Main turn loop ====
