@@ -156,6 +156,16 @@ void copyChosenBoard(int boardNum, char chosenBoard[ROWS][COLS], int* submarineC
 
 }
 
+int prepareBoard(char chosenBoard[ROWS][COLS], int* submarineCounter) {
+    int boardNum = getBoardNumber();
+    if (boardNum == -1) {
+        return -1;
+    }
+    //Copy chosen board
+    copyChosenBoard(boardNum, chosenBoard, submarineCounter);
+    return 0;
+}
+
 // Add your functions here
 void copyBoard(const char matrix[ROWS][COLS], char chosenBoard[ROWS][COLS], int *submarineCounter) {
     for (int i = 0; i < 8; i++) {
@@ -174,18 +184,10 @@ int main(void) {
     setvbuf(stdout, NULL, _IONBF, 0);
     int submarineCounter = 0; int numberOfS = 0, totalSubs = 0, counterOfMoves = 0;
     char currentStatusBoard[ROWS][COLS] = {0}; char chosenBoard[ROWS][COLS] = {0};
-
     print_welcome_message();
-
-    //Get board number
-    int boardNum = getBoardNumber();
-    if (boardNum == -1) {
+    if (prepareBoard(chosenBoard, &submarineCounter) <0) {
         return 1;
     }
-
-    //Copy chosen board
-    copyChosenBoard(boardNum, chosenBoard, &submarineCounter);
-
 
     //==== Main turn loop ====
     while (numberOfS < submarineCounter) {
