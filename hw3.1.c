@@ -189,9 +189,14 @@ int main(void) {
         int colPos = letterPos - 'A';
 
         //Input validation for letters
-        if (letterPos < 'A' || letterPos > 'H' ) {
-            print_error_row_or_col();
-            continue;
+        if ((letterPos >= 'A' && letterPos <= 'Z') || (letterPos >= 'a' && letterPos <= 'z')) {
+            if (letterPos < 'A' || letterPos > 'H' ) {
+                print_error_row_or_col();
+                continue;
+            }
+        }
+        else {
+            return 1;
         }
 
         //Input validation for numbers
