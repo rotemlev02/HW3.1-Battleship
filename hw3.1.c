@@ -113,7 +113,23 @@ void printMatrix(char matrix[ROWS][COLS]) {
         printf("|\n");
     }
 }
-
+int getBoardNumber(){
+    int boardNum = 0;
+    while (boardNum == 0) {
+        if (scanf("%d", &boardNum) != 1) {
+            return -1;
+        }
+        if (boardNum < 1 || boardNum > 5) {
+            printf("Error in board number, try again\n");
+            boardNum = 0;
+        }
+        else {
+            // Waiting until Valid board number
+            return boardNum;
+        }
+    }
+    return -1;
+}
 
 // Add your functions here
 void copyBoard(const char matrix[ROWS][COLS], char chosenBoard[ROWS][COLS], int *submarineCounter) {
@@ -137,19 +153,9 @@ int main(void) {
     print_welcome_message();
 
     //Get board number
-    int boardNum = 0;
-    while (boardNum == 0) {
-        if (scanf("%d", &boardNum) != 1) {
-            return 1;
-        }
-        if (boardNum < 1 || boardNum > 5) {
-            printf("Error in board number, try again\n");
-            boardNum = 0;
-        }
-        else {
-            // Waiting until Valid board number
-            break;
-        }
+    int boardNum = getBoardNumber();
+    if (boardNum == -1) {
+        return 1;
     }
 
     //Copy chosen board
