@@ -19,6 +19,9 @@ void printMatrix(char matrix[ROWS][COLS]);
 void copyBoard(const char matrix[ROWS][COLS], char chosenBoard[ROWS][COLS], int *submarineCounter);
 int getBoardNumber();
 void copyChosenBoard(int boardNum, char chosenBoard[ROWS][COLS], int* submarineCounter);
+int inputValidation(int* rowPos, int* colPos, char* letterPos,char currentStatusBoard[ROWS][COLS]);
+int prepareBoard(char chosenBoard[ROWS][COLS], int* submarineCounter);
+int playerTurnPositionAndValidation(char currentStatusBoard[ROWS][COLS], int* rowPos, int* colPos);
 
 // Optional Boards
 
@@ -178,11 +181,49 @@ void copyBoard(const char matrix[ROWS][COLS], char chosenBoard[ROWS][COLS], int 
     }
 }
 
+int playerTurnPositionAndValidation(char currentStatusBoard[ROWS][COLS], int* rowPos, int* colPos) {
+    //Get position from user in each turn
+    char letterPos = '\0';
+    print_enter_position();
+    if (scanf("%d %c", rowPos, &letterPos) != 2) {
+        return -1;
+    }
+    *colPos = letterPos - 'A';
+    if (inputValidation(rowPos, colPos, &letterPos, currentStatusBoard) < 0) {
+        return -1;
+    }
+    return 6;
+}
+
+int inputValidation(int* rowPos, int* colPos, char* letterPos, char currentStatusBoard[ROWS][COLS]) {
+    //Input validation for letters
+    if ((*letterPos >= 'A' && *letterPos <= 'Z') || (*letterPos >= 'a' && *letterPos <= 'z')) {
+        if (*letterPos < 'A' || *letterPos > 'H' ) {
+            print_error_row_or_col();
+            return 6;
+        }
+    }
+    else {
+        return -1;
+    }
+    //Input validation for numbers
+    if (*rowPos < 0 || *rowPos > 7 ) {
+        print_error_row_or_col();
+        return 6;
+    }
+    //Input validation for bombed positions
+    if (currentStatusBoard[*rowPos][*colPos] == SUBMARINE || currentStatusBoard[*rowPos][*colPos] == EMPTY) {
+        print_error_position_already_bombed();
+        return 6;
+    }
+    return 6;
+}
+
 
 int main(void) {
     //&&&&&only for checking
     setvbuf(stdout, NULL, _IONBF, 0);
-    int submarineCounter = 0; int numberOfS = 0, totalSubs = 0, counterOfMoves = 0;
+    int submarineCounter = 0; int numberOfS = 0, totalSubs = 0, counterOfMoves = 0, rowPos = 0, colPos = 0;
     char currentStatusBoard[ROWS][COLS] = {0}; char chosenBoard[ROWS][COLS] = {0};
     print_welcome_message();
     if (prepareBoard(chosenBoard, &submarineCounter) <0) {
@@ -194,33 +235,9 @@ int main(void) {
         //Print current board status
         printMatrix(currentStatusBoard);
 
-        //Get position from user in each turn
-        int rowPos = 0;
-        char letterPos = '\0';
-        print_enter_position();
-        if (scanf("%d %c", &rowPos, &letterPos) != 2) {
+
+        if (playerTurnPositionAndValidation (currentStatusBoard, &rowPos, &colPos) < 0) {
             return 1;
-        }
-        int colPos = letterPos - 'A';
-
-        //Input validation for letters
-        if ((letterPos >= 'A' && letterPos <= 'Z') || (letterPos >= 'a' && letterPos <= 'z')) {
-            if (letterPos < 'A' || letterPos > 'H' ) {
-                print_error_row_or_col();
-                continue;
-            }
-        }
-        else {
-            return 1;
-        }
-
-        //Input validation for numbers
-        if (rowPos < 0 || rowPos > 7 ) {
-        }
-
-
-        if (currentStatusBoard[rowPos][colPos] == SUBMARINE || currentStatusBoard[rowPos][colPos] == EMPTY) {
-            print_error_position_already_bombed();
         }
 
 
